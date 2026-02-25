@@ -1,0 +1,84 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.m2/
+
+# Java
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+.classpath
+.project
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+*.ids
+*.orig
+out/
+
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.swp
+*~.nib
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+*.swo
+*~
+
+# SAM
+.aws-sam/
+build/
+sam-tests/
+samconfig.toml.local
+
+# AWS
+sam-tests/
+.aws/
+secrets.json
+
+# Node/npm (if using Node.js utilities)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# General
+*.log
+.env
+.env.local
+*.pid
+dist/
+build/
+
+# MCP configuration
+mcp.json

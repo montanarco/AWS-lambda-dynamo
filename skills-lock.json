@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "aws-sdk-java-v2-lambda": {
+      "source": "giuseppe-trisciuoglio/developer-kit",
+      "sourceType": "github",
+      "computedHash": "9360a7a1adb595235764c445015680db06600d99e00f2573b1673920e88a7a0a"
+    }
+  }
+}
