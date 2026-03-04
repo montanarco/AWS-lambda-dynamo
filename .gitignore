@@ -87,3 +87,10 @@ build/
 
 # MCP configuration
 mcp.json
+
+# Practice write-up and assets (contain real AWS URLs, CloudFront URLs, and credentials)
+AWS-Practice-APIGateway-Lambda-DynamoDB.md
+Assets/
+
+# IDE/tool-specific config
+.codemie/
