@@ -60,7 +60,12 @@ tmp/
 .aws-sam/
 build/
 sam-tests/
+samconfig.toml
 samconfig.toml.local
+
+# Local deployment info (contains real URLs and account IDs)
+tech docs/deployment.local.md
+tech docs/openapi.local.yaml
 
 # AWS
 sam-tests/

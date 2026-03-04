@@ -1,0 +1,149 @@
+# User Stories — Products Web UI
+
+## Context
+
+These stories cover the frontend UI for a Products management application. The UI
+communicates with the Products REST API (see `openapi.yaml`). The base URL and
+available endpoints are documented in `deployment.md`.
+
+---
+
+## US-01 — Product List
+
+**As a** store manager,
+**I want** to see a list of all my products in a table,
+**so that** I can quickly browse the catalog and take actions on individual items.
+
+### Acceptance Criteria
+
+- [ ] When the page loads, the UI calls `GET /products` (no `id` parameter) and displays the results.
+- [ ] The table has the following columns:
+  - **Name** — the product name.
+  - **Actions** — two buttons displayed side by side on the left of each row:
+    - **Edit** button — navigates to the Edit Product form for that product (see US-02).
+    - **Delete** button — opens a confirmation modal (see Delete Modal below).
+- [ ] While the data is loading, a loading indicator is shown.
+- [ ] If the API returns an error, a user-friendly error message is displayed.
+- [ ] An **Add Product** button is visible at the top of the page. When clicked it navigates to the Add Product form (see US-03).
+
+### Delete Modal (Prototype)
+
+> This is a non-functional prototype. No API call is made.
+
+- When **Delete** is clicked, a modal dialog appears with:
+  - The message: _"This item will be deleted."_
+  - A **Close** button that dismisses the modal without performing any action.
+- No `DELETE` endpoint is called at this stage.
+
+### Notes for the Engineer
+
+- Use `GET /products` (no query params) to fetch the full list.
+- The API response `message` field contains the raw DynamoDB item map. Parse it
+  to extract at minimum the `name` field for display in the table.
+- The Delete endpoint does not exist yet in the backend. The modal is a UI
+  placeholder only.
+
+---
+
+## US-02 — Edit Product
+
+**As a** store manager,
+**I want** to edit the details of an existing product,
+**so that** I can keep the product catalog up to date.
+
+### Acceptance Criteria
+
+- [ ] The Edit form is loaded when the **Edit** button is clicked on a row in the
+  product list (US-01).
+- [ ] The form pre-populates by calling `GET /products?id={id}` using the product
+  ID from the selected row.
+- [ ] The form is displayed as a two-column table:
+  - **Column 1** — Property name (label).
+  - **Column 2** — Input field with the current value.
+- [ ] The following predefined fields are always shown:
+
+  | Property      | Editable | Input type |
+  |---------------|----------|------------|
+  | ID            | No       | Read-only text |
+  | Name          | Yes      | Text input |
+  | Price         | Yes      | Number input (positive values only) |
+  | Description   | Yes      | Textarea |
+  | Picture URL   | Yes      | Text input (URL) |
+
+- [ ] Below the predefined fields, any **custom attributes** already stored on the
+  product are also shown as editable rows in the same two-column format.
+- [ ] A **(+) Add property** button is displayed below the table. When clicked, it
+  appends a new empty row to the table with:
+  - A text input for the **property name** (e.g. `brand`).
+  - A text input for the **property value** (e.g. `Fender`).
+  - The user can add as many custom properties as needed.
+- [ ] A **Save** button submits the changes by calling `PUT /products` with the
+  updated fields. The `id` field is always included in the request body.
+- [ ] Only fields that are present in the form (predefined + custom) are sent in
+  the request body. Empty custom rows (both name and value blank) are ignored.
+- [ ] On success, the user is navigated back to the product list (US-01).
+- [ ] On error, a user-friendly error message is displayed without leaving the form.
+- [ ] A **Cancel** button discards all changes and returns to the product list
+  without calling the API.
+
+### Notes for the Engineer
+
+- The `id` field must be sent in the `PUT /products` body but rendered as
+  read-only in the UI.
+- The `PUT /products` endpoint accepts any key-value pair in the request body
+  (besides `id`), so custom attributes added via the `(+)` button can be sent
+  as-is.
+- The current API response returns the raw DynamoDB map format. Parse it to
+  populate the form fields correctly on load.
+
+---
+
+## US-03 — Add Product
+
+**As a** store manager,
+**I want** to add a new product by filling in a form,
+**so that** I can expand the product catalog.
+
+### Acceptance Criteria
+
+- [ ] The Add Product form is loaded when the **Add Product** button is clicked in
+  the product list (US-01).
+- [ ] The form contains the following empty fields:
+
+  | Field         | Required | Input type |
+  |---------------|----------|------------|
+  | Name          | Yes      | Text input |
+  | Price         | Yes      | Number input (positive values only) |
+  | Description   | No       | Textarea |
+  | Picture URL   | No       | Text input (URL) |
+
+- [ ] The **ID field is not shown** to the user. The ID is auto-generated by the
+  backend (see Backend Dependency below).
+- [ ] Field validation runs before submission:
+  - **Name** must not be empty.
+  - **Price** must be a positive number.
+- [ ] A **Save** button submits the form by calling `POST /products`.
+- [ ] On success, the user is navigated back to the product list (US-01), which
+  should reflect the newly added product.
+- [ ] On error, a user-friendly error message is displayed without leaving the form.
+- [ ] A **Cancel** button discards the form and returns to the product list without
+  calling the API.
+
+### Backend Dependency
+
+> The current `POST /products` endpoint requires the client to provide the `id`
+> field. Before this user story can be completed, the backend must be updated to
+> **auto-generate the product ID** (e.g. UUID) server-side and remove `id` as a
+> required field in the request body.
+
+---
+
+## Summary
+
+| Story  | Endpoint used         | Method |
+|--------|-----------------------|--------|
+| US-01  | `/products`           | GET    |
+| US-02  | `/products?id={id}`   | GET    |
+| US-02  | `/products`           | PUT    |
+| US-03  | `/products`           | POST   |
+| US-01  | *(none — prototype)*  | DELETE |

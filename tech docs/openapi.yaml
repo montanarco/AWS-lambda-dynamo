@@ -1,0 +1,224 @@
+openapi: "3.0.1"
+info:
+  title: CreateProductDynamo API
+  description: REST API for managing products, backed by AWS Lambda and DynamoDB.
+  version: "1.0"
+
+servers:
+  - url: "{{BASE_URL}}"
+    description: API Gateway endpoint (replace with the actual URL provided by your backend team)
+
+paths:
+
+  /products:
+
+    get:
+      summary: Get a product or list all products
+      description: >
+        Returns a single product when `id` is provided as a query parameter.
+        Returns the full list of products when `id` is omitted.
+      operationId: getProduct
+      parameters:
+        - name: id
+          in: query
+          required: false
+          description: The unique identifier of the product to retrieve.
+          schema:
+            type: string
+          example: "p001"
+      responses:
+        "200":
+          description: Product(s) retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              examples:
+                single_product:
+                  summary: Single product returned
+                  value:
+                    statusCode: 200
+                    message: "{id={S: p001,}, name={S: Laptop,}, price={N: 999.99,}}"
+                all_products:
+                  summary: All products returned
+                  value:
+                    statusCode: 200
+                    message: "[{id={S: p001,}, name={S: Laptop,}, price={N: 999.99,}}]"
+        "404":
+          description: Product not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                statusCode: 404
+                message: "Product with id p001 not found"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+    post:
+      summary: Create a product
+      description: Creates a new product in the database. The `id` field must be unique.
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+            examples:
+              minimal:
+                summary: Required fields only
+                value:
+                  id: "p001"
+                  name: "Laptop"
+                  price: 999.99
+              full:
+                summary: All fields
+                value:
+                  id: "p001"
+                  name: "Laptop"
+                  price: 999.99
+                  description: "High-end laptop with 16GB RAM"
+                  picture_url: "https://example.com/laptop.jpg"
+      responses:
+        "200":
+          description: Product created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                statusCode: 200
+                message: "Product created successfully"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+    put:
+      summary: Update a product
+      description: >
+        Updates one or more fields of an existing product identified by `id`.
+        Only the fields included in the request body will be updated.
+        At least one field besides `id` must be provided.
+      operationId: updateProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductUpdate"
+            examples:
+              update_price:
+                summary: Update price only
+                value:
+                  id: "p001"
+                  price: 849.99
+              update_multiple:
+                summary: Update multiple fields
+                value:
+                  id: "p001"
+                  name: "Laptop Pro"
+                  price: 1199.99
+                  description: "Updated description"
+      responses:
+        "200":
+          description: Product updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                statusCode: 200
+                message: "Product with ID p001 updated successfully"
+        "400":
+          description: No updatable fields provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                statusCode: 400
+                message: "No attributes to update"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+components:
+  schemas:
+
+    ProductInput:
+      type: object
+      required:
+        - id
+        - name
+        - price
+      properties:
+        id:
+          type: string
+          description: Unique product identifier.
+          example: "p001"
+        name:
+          type: string
+          description: Product name.
+          example: "Laptop"
+        price:
+          type: number
+          description: Product price.
+          example: 999.99
+        description:
+          type: string
+          description: Optional product description.
+          example: "High-end laptop with 16GB RAM"
+        picture_url:
+          type: string
+          description: Optional URL of the product image.
+          example: "https://example.com/laptop.jpg"
+
+    ProductUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: ID of the product to update.
+          example: "p001"
+        name:
+          type: string
+          description: New product name.
+          example: "Laptop Pro"
+        price:
+          type: number
+          description: New product price.
+          example: 849.99
+        description:
+          type: string
+          description: New product description.
+          example: "Updated description"
+        picture_url:
+          type: string
+          description: New product image URL.
+          example: "https://example.com/new-image.jpg"
+
+    ApiResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP status code of the operation.
+          example: 200
+        message:
+          type: string
+          description: Result message or data payload.
+          example: "Product created successfully"

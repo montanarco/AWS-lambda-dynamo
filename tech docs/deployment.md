@@ -12,8 +12,8 @@ Deployed via AWS SAM to the `us-east-1` region.
 | Property         | Value                          |
 |------------------|--------------------------------|
 | Stack Name       | `CreateProductDynamo`          |
-| Region           | `us-east-1`                    |
-| AWS Account      | `108782074849`                 |
+| Region           | `<AWS_REGION>`                 |
+| AWS Account      | `<AWS_ACCOUNT_ID>`             |
 | Deployment Date  | 2026-03-03                     |
 | Runtime          | Java 17                        |
 | Architecture     | x86_64                         |
@@ -35,7 +35,7 @@ Deployed via AWS SAM to the `us-east-1` region.
 ## Base URL
 
 ```
-https://kqa62tgqv6.execute-api.us-east-1.amazonaws.com/Prod/products/
+https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com/Prod/products/
 ```
 
 ---
@@ -59,7 +59,7 @@ GET /Prod/products/?id={productId}
 **Example**
 
 ```bash
-curl "https://kqa62tgqv6.execute-api.us-east-1.amazonaws.com/Prod/products/?id=abc-123"
+curl "https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com/Prod/products/?id=abc-123"
 ```
 
 **Responses**
@@ -107,7 +107,7 @@ Content-Type: application/json
 **Example**
 
 ```bash
-curl -X POST "https://kqa62tgqv6.execute-api.us-east-1.amazonaws.com/Prod/products/" \
+curl -X POST "https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com/Prod/products/" \
   -H "Content-Type: application/json" \
   -d '{"id":"abc-123","name":"Laptop","price":999.99,"description":"High-end laptop"}'
 ```
@@ -157,7 +157,7 @@ At least one optional field must be provided.
 **Example**
 
 ```bash
-curl -X PUT "https://kqa62tgqv6.execute-api.us-east-1.amazonaws.com/Prod/products/" \
+curl -X PUT "https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com/Prod/products/" \
   -H "Content-Type: application/json" \
   -d '{"id":"abc-123","price":849.99}'
 ```
@@ -189,15 +189,15 @@ All endpoints return JSON in the following structure:
 
 ```bash
 # Create a product
-curl -X POST "https://kqa62tgqv6.execute-api.us-east-1.amazonaws.com/Prod/products/" \
+curl -X POST "https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com/Prod/products/" \
   -H "Content-Type: application/json" \
   -d '{"id":"p001","name":"Laptop","price":999.99}'
 
 # Get a product
-curl "https://kqa62tgqv6.execute-api.us-east-1.amazonaws.com/Prod/products/?id=p001"
+curl "https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com/Prod/products/?id=p001"
 
 # Update a product
-curl -X PUT "https://kqa62tgqv6.execute-api.us-east-1.amazonaws.com/Prod/products/" \
+curl -X PUT "https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com/Prod/products/" \
   -H "Content-Type: application/json" \
   -d '{"id":"p001","price":849.99}'
 ```
